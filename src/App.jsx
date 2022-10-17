@@ -42,11 +42,17 @@ const getAsyncStories = () => {
 const App = () => {
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
   const [stories, setStories] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    getAsyncStories().then((result) => {
-      setStories(result.data.stories);
-    });
+    setIsLoading(true);
+    getAsyncStories()
+      .then((result) => {
+        setStories(result.data.stories);
+        setIsLoading(false);
+      })
+      .catch(() => setIsError(true));
   }, []);
 
   const handleSearch = (e) => {
@@ -76,7 +82,13 @@ const App = () => {
 
       <hr />
 
-      <List list={searchedStories} removeItemHandler={removeItemHandler} />
+      {isError && <p>Something went wrong...</p>}
+
+      {isLoading ? (
+        <h3>Loading...</h3>
+      ) : (
+        <List list={searchedStories} removeItemHandler={removeItemHandler} />
+      )}
     </div>
   );
 };
