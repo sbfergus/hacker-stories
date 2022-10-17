@@ -3,8 +3,9 @@ import axios from "axios";
 import { useState, useEffect, useReducer, useCallback } from "react";
 
 import List from "./List";
-import InputWithLabel from "./InputWithLabel";
+
 import Item from "./Item";
+import SearchForm from "./SearchForm";
 
 const useStorageState = (key, initialState) => {
   const [value, setValue] = useState(localStorage.getItem(key) || initialState);
@@ -87,8 +88,10 @@ const App = () => {
     setSearchTerm(e.target.value);
   };
 
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = (e) => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
+
+    e.preventDefault();
   };
 
   const removeItemHandler = (item) => {
@@ -102,18 +105,11 @@ const App = () => {
     <div>
       <h1>My Hacker Stories</h1>
 
-      <InputWithLabel
-        id="search"
-        value={searchTerm}
-        isFocused
-        onInputChange={handleSearchInput}
-      >
-        <strong>Search:</strong>
-      </InputWithLabel>
-
-      <button type="button" disabled={!searchTerm} onClick={handleSearchSubmit}>
-        Submit
-      </button>
+      <SearchForm
+        searchTerm={searchTerm}
+        handleSearchInput={handleSearchInput}
+        handleSearchSubmit={handleSearchSubmit}
+      />
 
       <hr />
 
