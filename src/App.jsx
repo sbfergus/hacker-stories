@@ -1,52 +1,48 @@
 import * as React from "react";
+import { useState } from "react";
 
-const title = "React!";
+import List from "./List";
+import Search from "./Search";
 
-const welcome = {
-  title: "React",
-  greeting: "Hey",
-};
+const App = () => {
+  const [searchTerm, setSearchTerm] = useState("react");
+  const stories = [
+    {
+      title: "React",
+      url: "https://reactjs.org/",
+      author: "Jordan Wilke",
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: "Redux",
+      url: "https://redux.js.org/",
+      author: "Dan Abramov, Andrew Clarke",
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
+    },
+  ];
 
-const list = [
-  {
-    title: "React",
-    url: "https://reactjs.org/",
-    author: "Jordan Wilke",
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: "Redux",
-    url: "https://redux.js.org/",
-    author: "Dan Abramov, Andrew Clarke",
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-];
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
-function App() {
+  const searchedStories = stories.filter((story) =>
+    story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
-      <h1>
-        {welcome.greeting}, {welcome.title}
-      </h1>
-      <label htmlFor="search">Search: </label>
-      <input type="text" id="search" />
-      {list.map((item) => {
-        return (
-          <div key={item.objectID}>
-            <a href={item.url}>
-              <h2>{item.title}</h2>
-            </a>
+      <h1>My Hacker Stories</h1>
+      <Search onSearch={handleSearch} searchTerm={searchTerm} />
 
-            <p>{item.author}</p>
-          </div>
-        );
-      })}
+      <hr />
+
+      <List list={searchedStories} />
     </div>
   );
-}
+};
 
 export default App;
