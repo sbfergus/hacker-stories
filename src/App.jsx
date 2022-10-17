@@ -1,11 +1,22 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import List from "./List";
-import Search from "./Search";
+import InputWithLabel from "./InputWithLabel";
+
+const useStorageState = (key, initialState) => {
+  const [value, setValue] = useState(localStorage.getItem(key) || initialState);
+
+  useEffect(() => {
+    localStorage.setItem(key, value);
+  }, [value, key]);
+
+  return [value, setValue];
+};
 
 const App = () => {
-  const [searchTerm, setSearchTerm] = useState("react");
+  const [searchTerm, setSearchTerm] = useStorageState("search", "React");
+
   const stories = [
     {
       title: "React",
@@ -36,7 +47,15 @@ const App = () => {
   return (
     <div>
       <h1>My Hacker Stories</h1>
-      <Search onSearch={handleSearch} searchTerm={searchTerm} />
+
+      <InputWithLabel
+        id="search"
+        value={searchTerm}
+        isFocused
+        onInputChange={handleSearch}
+      >
+        <strong>Search:</strong>
+      </InputWithLabel>
 
       <hr />
 
