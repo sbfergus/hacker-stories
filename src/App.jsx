@@ -16,8 +16,7 @@ const useStorageState = (key, initialState) => {
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
-
-  const stories = [
+  const [stories, setStories] = useState([
     {
       title: "React",
       url: "https://reactjs.org/",
@@ -34,10 +33,14 @@ const App = () => {
       points: 5,
       objectID: 1,
     },
-  ];
+  ]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const removeItemHandler = (id) => {
+    return setStories(stories.filter((story) => story.objectID !== id));
   };
 
   const searchedStories = stories.filter((story) =>
@@ -59,7 +62,7 @@ const App = () => {
 
       <hr />
 
-      <List list={searchedStories} />
+      <List list={searchedStories} removeItemHandler={removeItemHandler} />
     </div>
   );
 };
