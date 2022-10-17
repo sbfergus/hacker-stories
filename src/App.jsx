@@ -59,13 +59,14 @@ const App = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [url, setUrl] = useState(`${API_ENDPOINT}${searchTerm}`);
 
   const handleFetchStories = useCallback(() => {
     if (searchTerm === "") return;
 
     dispatchStories({ type: "STORIES_FETCH_INIT" });
 
-    fetch(`${API_ENDPOINT}${searchTerm}`)
+    fetch(url)
       .then((response) => response.json())
       .then((result) => {
         dispatchStories({
@@ -75,14 +76,18 @@ const App = () => {
         setIsLoading(false);
       })
       .catch(() => dispatchStories({ type: "STORIES_FETCH_FAILURE" }));
-  }, [searchTerm]);
+  }, [url]);
 
   useEffect(() => {
     handleFetchStories();
   }, [handleFetchStories]);
 
-  const handleSearch = (e) => {
+  const handleSearchInput = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    setUrl(`${API_ENDPOINT}${searchTerm}`);
   };
 
   const removeItemHandler = (item) => {
@@ -100,10 +105,14 @@ const App = () => {
         id="search"
         value={searchTerm}
         isFocused
-        onInputChange={handleSearch}
+        onInputChange={handleSearchInput}
       >
         <strong>Search:</strong>
       </InputWithLabel>
+
+      <button type="button" disabled={!searchTerm} onClick={handleSearchSubmit}>
+        Submit
+      </button>
 
       <hr />
 
