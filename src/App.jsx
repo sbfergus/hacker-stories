@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect, useReducer, useCallback } from "react";
 
 import List from "./List";
 import InputWithLabel from "./InputWithLabel";
@@ -60,7 +60,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  useEffect(() => {
+  const handleFetchStories = useCallback(() => {
     if (searchTerm === "") return;
 
     dispatchStories({ type: "STORIES_FETCH_INIT" });
@@ -76,6 +76,10 @@ const App = () => {
       })
       .catch(() => dispatchStories({ type: "STORIES_FETCH_FAILURE" }));
   }, [searchTerm]);
+
+  useEffect(() => {
+    handleFetchStories();
+  }, [handleFetchStories]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
