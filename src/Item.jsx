@@ -7,7 +7,7 @@ const Item = ({ item, removeItemHandler }) => {
       <span>{item.author}</span>
       <span>{item.num_comments}</span>
       <span>{item.points}</span>
-      <button onClick={() => removeItemHandler(item.objectID)}>X</button>
+      <button onClick={() => removeItemHandler(item)}>X</button>
     </li>
   );
 };
