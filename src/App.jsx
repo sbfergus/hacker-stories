@@ -99,12 +99,14 @@ const App = () => {
     e.preventDefault();
   };
 
-  const removeItemHandler = (item) => {
+  const removeItemHandler = React.useCallback((item) => {
     dispatchStories({
       type: "REMOVE_STORY",
       payload: item,
     });
-  };
+  }, []);
+
+  console.log("B:App");
 
   return (
     <div>
