@@ -1,6 +1,6 @@
 import * as React from "react";
 import axios from "axios";
-import { useState, useEffect, useReducer, useCallback } from "react";
+import { useState, useEffect, useReducer, useCallback, useRef } from "react";
 
 import List from "./List";
 
@@ -8,10 +8,15 @@ import Item from "./Item";
 import SearchForm from "./SearchForm";
 
 const useStorageState = (key, initialState) => {
+  const isMounted = useRef(false);
   const [value, setValue] = useState(localStorage.getItem(key) || initialState);
 
   useEffect(() => {
-    localStorage.setItem(key, value);
+    if (!isMounted.current) {
+      isMounted.current = true;
+    } else {
+      localStorage.setItem(key, value);
+    }
   }, [value, key]);
 
   return [value, setValue];
