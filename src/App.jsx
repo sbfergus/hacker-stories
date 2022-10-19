@@ -132,3 +132,5 @@ const App = () => {
 };
 
 export default App;
+
+export { storiesReducer, SearchForm, Item };
