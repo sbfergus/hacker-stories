@@ -3,9 +3,10 @@ import axios from "axios";
 import { useState, useEffect, useReducer, useCallback, useRef } from "react";
 
 import List from "./List";
-
 import Item from "./Item";
 import SearchForm from "./SearchForm";
+
+import "./App.css";
 
 const useStorageState = (key, initialState) => {
   const isMounted = useRef(false);
@@ -109,8 +110,8 @@ const App = () => {
   console.log("B:App");
 
   return (
-    <div>
-      <h1>My Hacker Stories</h1>
+    <div className="container">
+      <h1 className="headline-primary">My Hacker Stories</h1>
 
       <SearchForm
         searchTerm={searchTerm}
