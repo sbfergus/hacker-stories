@@ -1,5 +1,6 @@
 import * as React from "react";
 import axios from "axios";
+import { sortBy } from "lodash";
 import { useState, useEffect, useReducer, useCallback, useRef } from "react";
 
 import List from "./List";
