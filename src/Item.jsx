@@ -3,7 +3,7 @@ import buttonstyles from "./Button.module.css";
 
 const Item = ({ item, removeItemHandler }) => {
   return (
-    <li className={styles.item}>
+    <li style={{ display: "flex" }}>
       <span style={{ width: "40%" }}>
         <a href={item.url}>{item.title}</a>
       </span>
