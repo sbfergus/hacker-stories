@@ -147,20 +147,42 @@ describe("App", () => {
   //   expect(screen.getAllByText("Dismiss").length).toBe(2);
   // });
 
-  it("fails fetching data", async () => {
-    const promise = Promise.reject();
+  // it("fails fetching data", async () => {
+  //   const promise = Promise.reject();
+
+  //   axios.get.mockImplementationOnce(() => promise);
+
+  //   render(<App />);
+
+  //   expect(screen.getByText(/Loading/)).toBeInTheDocument();
+
+  //   try {
+  //     await waitFor(async () => await promise);
+  //   } catch (error) {
+  //     expect(screen.queryByText(/Loading/)).toBeNull();
+  //     expect(screen.queryByText(/went wrong/)).toBeInTheDocument();
+  //   }
+  // });
+
+  it("removes a story", async () => {
+    const promise = Promise.resolve({
+      data: {
+        hits: stories,
+      },
+    });
 
     axios.get.mockImplementationOnce(() => promise);
 
     render(<App />);
 
-    expect(screen.getByText(/Loading/)).toBeInTheDocument();
+    await waitFor(async () => await promise);
 
-    try {
-      await waitFor(async () => await promise);
-    } catch (error) {
-      expect(screen.queryByText(/Loading/)).toBeNull();
-      expect(screen.queryByText(/went wrong/)).toBeInTheDocument();
-    }
+    expect(screen.getAllByText("Dismiss").length).toBe(2);
+    expect(screen.getByText("Jordan Walke")).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByText("Dismiss")[0]);
+
+    expect(screen.getAllByText("Dismiss").length).toBe(1);
+    expect(screen.queryByText("Jordan Walke")).toBeNull();
   });
 });
