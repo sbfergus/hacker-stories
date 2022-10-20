@@ -61,7 +61,26 @@ const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const extractSearchTerm = (url) => url.replace(API_ENDPOINT, "");
 
-const getLastSearches = (urls) => urls.slice(-5).map(extractSearchTerm);
+const getLastSearches = (urls) =>
+  urls
+    .reduce((result, url, index) => {
+      const searchTerm = extractSearchTerm(url);
+
+      if (index === 0) {
+        return result.concat(searchTerm);
+      }
+
+      const previousSearchTerm = result[result.length - 1];
+
+      if (searchTerm === previousSearchTerm) {
+        return result;
+      } else {
+        return result.concat(searchTerm);
+      }
+    }, [])
+    .slice(-6)
+    .slice(0, -1)
+    .map(extractSearchTerm);
 
 const getUrl = (searchTerm) => `${API_ENDPOINT}${searchTerm}`;
 
@@ -114,6 +133,7 @@ const App = () => {
   };
 
   const handleLastSearch = (searchTerm) => {
+    setSearchTerm(searchTerm);
     handleSearch(searchTerm);
   };
 
