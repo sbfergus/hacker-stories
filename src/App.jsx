@@ -59,6 +59,12 @@ const storiesReducer = (state, action) => {
 
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
+const extractSearchTerm = (url) => url.replace(API_ENDPOINT, "");
+
+const getLastSearches = (urls) => urls.slice(-5).map(extractSearchTerm);
+
+const getUrl = (searchTerm) => `${API_ENDPOINT}${searchTerm}`;
+
 const App = () => {
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
   const [stories, dispatchStories] = useReducer(storiesReducer, {
@@ -68,7 +74,7 @@ const App = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [url, setUrl] = useState(`${API_ENDPOINT}${searchTerm}`);
+  const [urls, setUrls] = useState([getUrl(searchTerm)]);
 
   const handleFetchStories = useCallback(async () => {
     if (searchTerm === "") return;
@@ -76,7 +82,8 @@ const App = () => {
     dispatchStories({ type: "STORIES_FETCH_INIT" });
 
     try {
-      const result = await axios.get(url);
+      const lastUrl = urls[urls.length - 1];
+      const result = await axios.get(lastUrl);
 
       dispatchStories({
         type: "STORIES_FETCH_SUCCESS",
@@ -85,7 +92,7 @@ const App = () => {
     } catch (error) {
       dispatchStories({ type: "STORIES_FETCH_FAILURE" });
     }
-  }, [url]);
+  }, [urls]);
 
   useEffect(() => {
     handleFetchStories();
@@ -95,11 +102,22 @@ const App = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleSearch = (searchTerm) => {
+    const url = getUrl(searchTerm);
+    setUrls(urls.concat(url));
+  };
+
   const handleSearchSubmit = (e) => {
-    setUrl(`${API_ENDPOINT}${searchTerm}`);
+    handleSearch(searchTerm);
 
     e.preventDefault();
   };
+
+  const handleLastSearch = (searchTerm) => {
+    handleSearch(searchTerm);
+  };
+
+  const lastSearches = getLastSearches(urls);
 
   const removeItemHandler = React.useCallback((item) => {
     dispatchStories({
@@ -119,6 +137,16 @@ const App = () => {
         handleSearchInput={handleSearchInput}
         handleSearchSubmit={handleSearchSubmit}
       />
+
+      {lastSearches.map((searchTerm, index) => (
+        <button
+          key={searchTerm + index}
+          type="button"
+          onClick={() => handleLastSearch(searchTerm)}
+        >
+          {searchTerm}
+        </button>
+      ))}
 
       <hr />
 
